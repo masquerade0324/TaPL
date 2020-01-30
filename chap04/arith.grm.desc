@@ -1,0 +1,318 @@
+start symbol used on the rhs of 2 rules
+
+warning: start symbol appears on the rhs of <term : IF term THEN term ELSE term >
+warning: start symbol appears on the rhs of <atterm : LPAREN term RPAREN >
+
+state 0:
+
+	term : . appterm 
+	term : . IF term THEN term ELSE term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	SUCC	shift 7
+	PRED	shift 6
+	ISZERO	shift 5
+	ZERO	shift 4
+	LPAREN	shift 3
+
+	term	goto 21
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 1:
+
+	appterm : atterm .  (reduce by rule 2)
+
+	THEN	reduce by rule 2
+	ELSE	reduce by rule 2
+	RPAREN	reduce by rule 2
+	EOF	reduce by rule 2
+
+
+	.	error
+
+
+state 2:
+
+	term : appterm .  (reduce by rule 0)
+
+	THEN	reduce by rule 0
+	ELSE	reduce by rule 0
+	RPAREN	reduce by rule 0
+	EOF	reduce by rule 0
+
+
+	.	error
+
+
+state 3:
+
+	atterm : LPAREN . term RPAREN 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	SUCC	shift 7
+	PRED	shift 6
+	ISZERO	shift 5
+	ZERO	shift 4
+	LPAREN	shift 3
+
+	term	goto 11
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 4:
+
+	atterm : ZERO .  (reduce by rule 9)
+
+	THEN	reduce by rule 9
+	ELSE	reduce by rule 9
+	RPAREN	reduce by rule 9
+	EOF	reduce by rule 9
+
+
+	.	error
+
+
+state 5:
+
+	appterm : ISZERO . atterm 
+
+	TRUE	shift 9
+	FALSE	shift 8
+	ZERO	shift 4
+	LPAREN	shift 3
+
+	atterm	goto 12
+
+	.	error
+
+
+state 6:
+
+	appterm : PRED . atterm 
+
+	TRUE	shift 9
+	FALSE	shift 8
+	ZERO	shift 4
+	LPAREN	shift 3
+
+	atterm	goto 13
+
+	.	error
+
+
+state 7:
+
+	appterm : SUCC . atterm 
+
+	TRUE	shift 9
+	FALSE	shift 8
+	ZERO	shift 4
+	LPAREN	shift 3
+
+	atterm	goto 14
+
+	.	error
+
+
+state 8:
+
+	atterm : FALSE .  (reduce by rule 8)
+
+	THEN	reduce by rule 8
+	ELSE	reduce by rule 8
+	RPAREN	reduce by rule 8
+	EOF	reduce by rule 8
+
+
+	.	error
+
+
+state 9:
+
+	atterm : TRUE .  (reduce by rule 7)
+
+	THEN	reduce by rule 7
+	ELSE	reduce by rule 7
+	RPAREN	reduce by rule 7
+	EOF	reduce by rule 7
+
+
+	.	error
+
+
+state 10:
+
+	term : IF . term THEN term ELSE term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	SUCC	shift 7
+	PRED	shift 6
+	ISZERO	shift 5
+	ZERO	shift 4
+	LPAREN	shift 3
+
+	term	goto 15
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 11:
+
+	atterm : LPAREN term . RPAREN 
+
+	RPAREN	shift 16
+
+
+	.	error
+
+
+state 12:
+
+	appterm : ISZERO atterm .  (reduce by rule 5)
+
+	THEN	reduce by rule 5
+	ELSE	reduce by rule 5
+	RPAREN	reduce by rule 5
+	EOF	reduce by rule 5
+
+
+	.	error
+
+
+state 13:
+
+	appterm : PRED atterm .  (reduce by rule 4)
+
+	THEN	reduce by rule 4
+	ELSE	reduce by rule 4
+	RPAREN	reduce by rule 4
+	EOF	reduce by rule 4
+
+
+	.	error
+
+
+state 14:
+
+	appterm : SUCC atterm .  (reduce by rule 3)
+
+	THEN	reduce by rule 3
+	ELSE	reduce by rule 3
+	RPAREN	reduce by rule 3
+	EOF	reduce by rule 3
+
+
+	.	error
+
+
+state 15:
+
+	term : IF term . THEN term ELSE term 
+
+	THEN	shift 17
+
+
+	.	error
+
+
+state 16:
+
+	atterm : LPAREN term RPAREN .  (reduce by rule 6)
+
+	THEN	reduce by rule 6
+	ELSE	reduce by rule 6
+	RPAREN	reduce by rule 6
+	EOF	reduce by rule 6
+
+
+	.	error
+
+
+state 17:
+
+	term : IF term THEN . term ELSE term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	SUCC	shift 7
+	PRED	shift 6
+	ISZERO	shift 5
+	ZERO	shift 4
+	LPAREN	shift 3
+
+	term	goto 18
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 18:
+
+	term : IF term THEN term . ELSE term 
+
+	ELSE	shift 19
+
+
+	.	error
+
+
+state 19:
+
+	term : IF term THEN term ELSE . term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	SUCC	shift 7
+	PRED	shift 6
+	ISZERO	shift 5
+	ZERO	shift 4
+	LPAREN	shift 3
+
+	term	goto 20
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 20:
+
+	term : IF term THEN term ELSE term .  (reduce by rule 1)
+
+	THEN	reduce by rule 1
+	ELSE	reduce by rule 1
+	RPAREN	reduce by rule 1
+	EOF	reduce by rule 1
+
+
+	.	error
+
+
+state 21:
+
+
+	EOF	accept
+
+
+	.	error
+
+56 of 118 action table entries left after compaction
+18 goto table entries

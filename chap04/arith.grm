@@ -1,0 +1,32 @@
+structure S = Syntax
+
+%%
+%name Arith
+%term IF     | THEN   | ELSE    | TRUE   | FALSE
+    | SUCC   | PRED   | ISZERO  | ZERO
+    | LPAREN | RPAREN | EOF
+%nonterm term of S.term
+       | appterm of S.term
+       | atterm of S.term
+%pos int
+%eop EOF
+%noshift EOF
+%nodefault
+%verbose
+
+%%
+term :
+    appterm                      (appterm)
+  | IF term THEN term ELSE term  (S.TmIf (term1, term2, term3))
+
+appterm :
+    atterm                       (atterm)  
+  | SUCC atterm                  (S.TmSucc atterm)
+  | PRED atterm                  (S.TmPred atterm)
+  | ISZERO atterm                (S.TmIsZero atterm)
+
+atterm :
+    LPAREN term RPAREN           (term)
+  | TRUE                         (S.TmTrue)
+  | FALSE                        (S.TmFalse)
+  | ZERO                         (S.TmZero)
