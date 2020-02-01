@@ -1,0 +1,41 @@
+structure S = Syntax
+
+%%
+%name Untyped
+%term IF     | THEN   | ELSE    | TRUE   | FALSE
+    | SUCC   | PRED   | ISZERO  | ZERO
+    | LPAREN | RPAREN | EOF     | VAL
+    | FN     | ARROW  | SEMI    | ID of string
+%nonterm top of S.context * S.term
+       | binds of S.context 
+       | term of S.context -> S.term
+       | appterm of S.context -> S.term
+       | atterm of S.context -> S.term
+%pos int
+%eop EOF
+%noshift EOF
+%nodefault
+%verbose
+
+%%
+top : 
+    term                  (S.emptyCtx, term S.emptyCtx)
+  | VAL binds SEMI term   (binds, term binds)
+
+binds :
+    ID                    (S.addName S.emptyCtx ID)
+  | ID binds              (S.addName binds ID)
+
+term :
+    appterm               (appterm)
+  | FN ID ARROW term      (fn ctx => let val ctx' = S.addName ctx ID
+                                     in  S.TmAbs (ID, term ctx')
+                                     end)
+
+appterm :
+    atterm                (atterm)
+  | appterm atterm        (fn ctx => S.TmApp (appterm ctx, atterm ctx))
+
+atterm :
+    LPAREN term RPAREN    (term)
+  | ID                    (fn ctx => S.TmVar (S.nameToIdx ctx ID, length ctx))

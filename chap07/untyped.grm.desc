@@ -1,0 +1,246 @@
+
+state 0:
+
+	top : . term 
+	top : . VAL binds SEMI term 
+
+	LPAREN	shift 7
+	VAL	shift 6
+	FN	shift 5
+	ID	shift 4
+
+	top	goto 19
+	term	goto 3
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 1:
+
+	appterm : atterm .  (reduce by rule 6)
+
+	LPAREN	reduce by rule 6
+	RPAREN	reduce by rule 6
+	EOF	reduce by rule 6
+	ID	reduce by rule 6
+
+
+	.	error
+
+
+state 2:
+
+	term : appterm .  (reduce by rule 4)
+	appterm : appterm . atterm 
+
+	LPAREN	shift 7
+	RPAREN	reduce by rule 4
+	EOF	reduce by rule 4
+	ID	shift 4
+
+	atterm	goto 8
+
+	.	error
+
+
+state 3:
+
+	top : term .  (reduce by rule 0)
+
+	EOF	reduce by rule 0
+
+
+	.	error
+
+
+state 4:
+
+	atterm : ID .  (reduce by rule 9)
+
+	LPAREN	reduce by rule 9
+	RPAREN	reduce by rule 9
+	EOF	reduce by rule 9
+	ID	reduce by rule 9
+
+
+	.	error
+
+
+state 5:
+
+	term : FN . ID ARROW term 
+
+	ID	shift 9
+
+
+	.	error
+
+
+state 6:
+
+	top : VAL . binds SEMI term 
+
+	ID	shift 11
+
+	binds	goto 10
+
+	.	error
+
+
+state 7:
+
+	atterm : LPAREN . term RPAREN 
+
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 12
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 8:
+
+	appterm : appterm atterm .  (reduce by rule 7)
+
+	LPAREN	reduce by rule 7
+	RPAREN	reduce by rule 7
+	EOF	reduce by rule 7
+	ID	reduce by rule 7
+
+
+	.	error
+
+
+state 9:
+
+	term : FN ID . ARROW term 
+
+	ARROW	shift 13
+
+
+	.	error
+
+
+state 10:
+
+	top : VAL binds . SEMI term 
+
+	SEMI	shift 14
+
+
+	.	error
+
+
+state 11:
+
+	binds : ID .  (reduce by rule 2)
+	binds : ID . binds 
+
+	SEMI	reduce by rule 2
+	ID	shift 11
+
+	binds	goto 15
+
+	.	error
+
+
+state 12:
+
+	atterm : LPAREN term . RPAREN 
+
+	RPAREN	shift 16
+
+
+	.	error
+
+
+state 13:
+
+	term : FN ID ARROW . term 
+
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 17
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 14:
+
+	top : VAL binds SEMI . term 
+
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 18
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 15:
+
+	binds : ID binds .  (reduce by rule 3)
+
+	SEMI	reduce by rule 3
+
+
+	.	error
+
+
+state 16:
+
+	atterm : LPAREN term RPAREN .  (reduce by rule 8)
+
+	LPAREN	reduce by rule 8
+	RPAREN	reduce by rule 8
+	EOF	reduce by rule 8
+	ID	reduce by rule 8
+
+
+	.	error
+
+
+state 17:
+
+	term : FN ID ARROW term .  (reduce by rule 5)
+
+	RPAREN	reduce by rule 5
+	EOF	reduce by rule 5
+
+
+	.	error
+
+
+state 18:
+
+	top : VAL binds SEMI term .  (reduce by rule 1)
+
+	EOF	reduce by rule 1
+
+
+	.	error
+
+
+state 19:
+
+
+	EOF	accept
+
+
+	.	error
+
+40 of 66 action table entries left after compaction
+16 goto table entries
