@@ -1,0 +1,557 @@
+
+state 0:
+
+	top : . term 
+	top : . VAL binds SEMI term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	LPAREN	shift 7
+	VAL	shift 6
+	FN	shift 5
+	ID	shift 4
+
+	top	goto 39
+	term	goto 3
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 1:
+
+	appterm : atterm .  (reduce by rule 12)
+
+	THEN	reduce by rule 12
+	ELSE	reduce by rule 12
+	TRUE	reduce by rule 12
+	FALSE	reduce by rule 12
+	LPAREN	reduce by rule 12
+	RPAREN	reduce by rule 12
+	EOF	reduce by rule 12
+	ID	reduce by rule 12
+
+
+	.	error
+
+
+state 2:
+
+	term : appterm .  (reduce by rule 9)
+	appterm : appterm . atterm 
+
+	THEN	reduce by rule 9
+	ELSE	reduce by rule 9
+	TRUE	shift 9
+	FALSE	shift 8
+	LPAREN	shift 7
+	RPAREN	reduce by rule 9
+	EOF	reduce by rule 9
+	ID	shift 4
+
+	atterm	goto 11
+
+	.	error
+
+
+state 3:
+
+	top : term .  (reduce by rule 0)
+
+	EOF	reduce by rule 0
+
+
+	.	error
+
+
+state 4:
+
+	atterm : ID .  (reduce by rule 15)
+
+	THEN	reduce by rule 15
+	ELSE	reduce by rule 15
+	TRUE	reduce by rule 15
+	FALSE	reduce by rule 15
+	LPAREN	reduce by rule 15
+	RPAREN	reduce by rule 15
+	EOF	reduce by rule 15
+	ID	reduce by rule 15
+
+
+	.	error
+
+
+state 5:
+
+	term : FN . ID COLON ty DARROW term 
+
+	ID	shift 12
+
+
+	.	error
+
+
+state 6:
+
+	top : VAL . binds SEMI term 
+
+	ID	shift 14
+
+	binds	goto 13
+
+	.	error
+
+
+state 7:
+
+	atterm : LPAREN . term RPAREN 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 15
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 8:
+
+	atterm : FALSE .  (reduce by rule 17)
+
+	THEN	reduce by rule 17
+	ELSE	reduce by rule 17
+	TRUE	reduce by rule 17
+	FALSE	reduce by rule 17
+	LPAREN	reduce by rule 17
+	RPAREN	reduce by rule 17
+	EOF	reduce by rule 17
+	ID	reduce by rule 17
+
+
+	.	error
+
+
+state 9:
+
+	atterm : TRUE .  (reduce by rule 16)
+
+	THEN	reduce by rule 16
+	ELSE	reduce by rule 16
+	TRUE	reduce by rule 16
+	FALSE	reduce by rule 16
+	LPAREN	reduce by rule 16
+	RPAREN	reduce by rule 16
+	EOF	reduce by rule 16
+	ID	reduce by rule 16
+
+
+	.	error
+
+
+state 10:
+
+	term : IF . term THEN term ELSE term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 16
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 11:
+
+	appterm : appterm atterm .  (reduce by rule 13)
+
+	THEN	reduce by rule 13
+	ELSE	reduce by rule 13
+	TRUE	reduce by rule 13
+	FALSE	reduce by rule 13
+	LPAREN	reduce by rule 13
+	RPAREN	reduce by rule 13
+	EOF	reduce by rule 13
+	ID	reduce by rule 13
+
+
+	.	error
+
+
+state 12:
+
+	term : FN ID . COLON ty DARROW term 
+
+	COLON	shift 17
+
+
+	.	error
+
+
+state 13:
+
+	top : VAL binds . SEMI term 
+
+	SEMI	shift 18
+
+
+	.	error
+
+
+state 14:
+
+	binds : ID . COLON ty 
+	binds : ID . COLON ty binds 
+
+	COLON	shift 19
+
+
+	.	error
+
+
+state 15:
+
+	atterm : LPAREN term . RPAREN 
+
+	RPAREN	shift 20
+
+
+	.	error
+
+
+state 16:
+
+	term : IF term . THEN term ELSE term 
+
+	THEN	shift 21
+
+
+	.	error
+
+
+state 17:
+
+	term : FN ID COLON . ty DARROW term 
+
+	LPAREN	shift 26
+	BOOL	shift 25
+
+	ty	goto 24
+	funty	goto 23
+	atty	goto 22
+
+	.	error
+
+
+state 18:
+
+	top : VAL binds SEMI . term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 27
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 19:
+
+	binds : ID COLON . ty 
+	binds : ID COLON . ty binds 
+
+	LPAREN	shift 26
+	BOOL	shift 25
+
+	ty	goto 28
+	funty	goto 23
+	atty	goto 22
+
+	.	error
+
+
+state 20:
+
+	atterm : LPAREN term RPAREN .  (reduce by rule 14)
+
+	THEN	reduce by rule 14
+	ELSE	reduce by rule 14
+	TRUE	reduce by rule 14
+	FALSE	reduce by rule 14
+	LPAREN	reduce by rule 14
+	RPAREN	reduce by rule 14
+	EOF	reduce by rule 14
+	ID	reduce by rule 14
+
+
+	.	error
+
+
+state 21:
+
+	term : IF term THEN . term ELSE term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 29
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 22:
+
+	funty : atty .  (reduce by rule 5)
+	funty : atty . ARROW funty 
+
+	RPAREN	reduce by rule 5
+	ARROW	shift 30
+	SEMI	reduce by rule 5
+	ID	reduce by rule 5
+	DARROW	reduce by rule 5
+
+
+	.	error
+
+
+state 23:
+
+	ty : funty .  (reduce by rule 4)
+
+	RPAREN	reduce by rule 4
+	SEMI	reduce by rule 4
+	ID	reduce by rule 4
+	DARROW	reduce by rule 4
+
+
+	.	error
+
+
+state 24:
+
+	term : FN ID COLON ty . DARROW term 
+
+	DARROW	shift 31
+
+
+	.	error
+
+
+state 25:
+
+	atty : BOOL .  (reduce by rule 8)
+
+	RPAREN	reduce by rule 8
+	ARROW	reduce by rule 8
+	SEMI	reduce by rule 8
+	ID	reduce by rule 8
+	DARROW	reduce by rule 8
+
+
+	.	error
+
+
+state 26:
+
+	atty : LPAREN . ty RPAREN 
+
+	LPAREN	shift 26
+	BOOL	shift 25
+
+	ty	goto 32
+	funty	goto 23
+	atty	goto 22
+
+	.	error
+
+
+state 27:
+
+	top : VAL binds SEMI term .  (reduce by rule 1)
+
+	EOF	reduce by rule 1
+
+
+	.	error
+
+
+state 28:
+
+	binds : ID COLON ty .  (reduce by rule 2)
+	binds : ID COLON ty . binds 
+
+	SEMI	reduce by rule 2
+	ID	shift 14
+
+	binds	goto 33
+
+	.	error
+
+
+state 29:
+
+	term : IF term THEN term . ELSE term 
+
+	ELSE	shift 34
+
+
+	.	error
+
+
+state 30:
+
+	funty : atty ARROW . funty 
+
+	LPAREN	shift 26
+	BOOL	shift 25
+
+	funty	goto 35
+	atty	goto 22
+
+	.	error
+
+
+state 31:
+
+	term : FN ID COLON ty DARROW . term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 36
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 32:
+
+	atty : LPAREN ty . RPAREN 
+
+	RPAREN	shift 37
+
+
+	.	error
+
+
+state 33:
+
+	binds : ID COLON ty binds .  (reduce by rule 3)
+
+	SEMI	reduce by rule 3
+
+
+	.	error
+
+
+state 34:
+
+	term : IF term THEN term ELSE . term 
+
+	IF	shift 10
+	TRUE	shift 9
+	FALSE	shift 8
+	LPAREN	shift 7
+	FN	shift 5
+	ID	shift 4
+
+	term	goto 38
+	appterm	goto 2
+	atterm	goto 1
+
+	.	error
+
+
+state 35:
+
+	funty : atty ARROW funty .  (reduce by rule 6)
+
+	RPAREN	reduce by rule 6
+	SEMI	reduce by rule 6
+	ID	reduce by rule 6
+	DARROW	reduce by rule 6
+
+
+	.	error
+
+
+state 36:
+
+	term : FN ID COLON ty DARROW term .  (reduce by rule 10)
+
+	THEN	reduce by rule 10
+	ELSE	reduce by rule 10
+	RPAREN	reduce by rule 10
+	EOF	reduce by rule 10
+
+
+	.	error
+
+
+state 37:
+
+	atty : LPAREN ty RPAREN .  (reduce by rule 7)
+
+	RPAREN	reduce by rule 7
+	ARROW	reduce by rule 7
+	SEMI	reduce by rule 7
+	ID	reduce by rule 7
+	DARROW	reduce by rule 7
+
+
+	.	error
+
+
+state 38:
+
+	term : IF term THEN term ELSE term .  (reduce by rule 11)
+
+	THEN	reduce by rule 11
+	ELSE	reduce by rule 11
+	RPAREN	reduce by rule 11
+	EOF	reduce by rule 11
+
+
+	.	error
+
+
+state 39:
+
+
+	EOF	accept
+
+
+	.	error
+
+118 of 194 action table entries left after compaction
+36 goto table entries

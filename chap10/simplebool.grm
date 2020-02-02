@@ -1,0 +1,63 @@
+structure S = Syntax
+
+%%
+%name SimpleBool
+%term IF     | THEN   | ELSE    | TRUE   | FALSE
+    | SUCC   | PRED   | ISZERO  | ZERO
+    | LPAREN | RPAREN | EOF     | VAL
+    | FN     | ARROW  | SEMI    | BOOL
+    | ID of string    | COLON   | DARROW
+%nonterm top of S.context * S.term
+       | binds of S.context 
+       | ty of S.ty
+       | funty of S.ty
+       | atty of S.ty
+       | term of S.context -> S.term
+       | appterm of S.context -> S.term
+       | atterm of S.context -> S.term
+%pos int
+%eop EOF
+%noshift EOF
+%nodefault
+%verbose
+
+%%
+top : 
+    term                  (S.emptyCtx, term S.emptyCtx)
+  | VAL binds SEMI term   (binds, term binds)
+
+binds :
+    ID COLON ty           (S.addVar S.emptyCtx ID ty)
+  | ID COLON ty binds     (S.addVar binds ID ty)
+
+ty :
+    funty                 (funty)
+
+funty :
+    atty                  (atty)
+  | atty ARROW funty      (S.TyFun (atty, funty))
+
+atty :
+    LPAREN ty RPAREN      (ty)
+  | BOOL                  (S.TyBool)
+
+term :
+    appterm               (appterm)
+  | FN ID COLON ty DARROW term
+                          (fn ctx => let val ctx' = S.addName ctx ID
+                                     in  S.TmAbs (ID, ty, term ctx')
+                                     end)
+  | IF term THEN term ELSE term
+                          (fn ctx => S.TmIf (term1 ctx,
+                                             term2 ctx,
+                                             term3 ctx))
+
+appterm :
+    atterm                (atterm)
+  | appterm atterm        (fn ctx => S.TmApp (appterm ctx, atterm ctx))
+
+atterm :
+    LPAREN term RPAREN    (term)
+  | ID                    (fn ctx => S.TmVar (S.nameToIdx ctx ID, length ctx))
+  | TRUE                  (fn ctx => S.TmTrue)
+  | FALSE                 (fn ctx => S.TmFalse)
